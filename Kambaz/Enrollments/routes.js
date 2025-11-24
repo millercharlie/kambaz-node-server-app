@@ -2,6 +2,19 @@ import EnrollmentsDao from "./dao.js";
 
 const EnrollmentsRoutes = (app, db) => {
   const dao = EnrollmentsDao(db);
+  const findCoursesForEnrolledUser = async (req, res) => {
+    let { userId } = req.params;
+    if (userId === "current") {
+      const currentUser = req.session["currentUser"];
+      if (!currentUser) {
+        res.sendStatus(401);
+        return;
+      }
+      userId = currentUser._id;
+    }
+    const courses = await dao.findCoursesForUser(userId);
+    res.json(courses);
+  };
   const enrollUserInCourse = (req, res) => {
     const { userId } = req.params;
     const enrollment = {
@@ -16,14 +29,10 @@ const EnrollmentsRoutes = (app, db) => {
     const status = dao.unenrollUserFromCourse(enrollmentId);
     res.send(status);
   };
-  const fetchEnrollments = (req, res) => {
-    const status = dao.fetchEnrollments();
-    res.send(status);
-  };
 
   app.post("/api/enrollments", enrollUserInCourse);
   app.delete("/api/enrollments/:enrollmentId", unenrollUserFromCourse);
-  app.get("/api/enrollments/", fetchEnrollments);
+  app.get("/api/enrollments/:userId", findCoursesForEnrolledUser);
 }
 
 export default EnrollmentsRoutes;

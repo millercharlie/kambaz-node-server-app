@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import {takenQuizzesSchema} from "../Quizzes/schema.js";
 const userSchema = new mongoose.Schema({
     _id: String,
     username: { type: String, required: true, unique: true },
@@ -16,6 +17,7 @@ const userSchema = new mongoose.Schema({
     section: String,
     lastActivity: Date,
     totalActivity: String,
+    takenQuizzes: [takenQuizzesSchema],
   },
   { collection: "users" }
 );

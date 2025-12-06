@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import courseSchema from "../Courses/schema.js";
 
 const assignmentSchema = new mongoose.Schema({
     _id: String,
